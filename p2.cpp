@@ -88,8 +88,8 @@ public :
 //----------------------------------------------------------------------------------------------------------------------------------------------//
 //                                                                                                                                              //
 //   Algorithm used: Dinic's Algorithm.                                                                                                         //
-//   Partially implemented from: https://www.geeksforgeeks.org/dinics-algorithm-maximum-flow/ (c++ solution).                                   //
-//   Methods implemented: Transform the input.                                                                                                  //
+//   Implemented from: https://www.geeksforgeeks.org/dinics-algorithm-maximum-flow/ (c++ solution).                                   //
+//   New Methods implemented: Transform the input.                                                                                                  //
 //                                                                                                                                              //
 //   Steps to implement the algorithm:                                                                                                          //
 //          (1) Add all edges information to build the graph. O(E)                                                                              //

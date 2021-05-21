@@ -88,21 +88,15 @@ public :
 //----------------------------------------------------------------------------------------------------------------------------------------------//
 //                                                                                                                                              //
 //   Algorithm used: Dinic's Algorithm.                                                                                                         //
-//   Implemented from: https://www.geeksforgeeks.org/dinics-algorithm-maximum-flow/ (c++ solution).                                   //
-//   New Methods implemented: Transform the input.                                                                                                  //
+//   Implemented from: https://www.geeksforgeeks.org/dinics-algorithm-maximum-flow/ (c++ solution).                                             //
+//   New Methods implemented: Transform the input.                                                                                              //
 //                                                                                                                                              //
 //   Steps to implement the algorithm:                                                                                                          //
 //          (1) Add all edges information to build the graph. O(E)                                                                              //
-//          (2) Compute the indegree of all the vertices. O(V+E)                                                                                //
-//              ADDED! Counter to save initial number of vertices with indegree = 0. This will be                                               //
-//                 minimum number of interactions.                                                                                              //
-//          (3) Create a queue that is initialized with all the vertices with indegree = 0. O(V)                                                //
-//          (4) For each vertice in the queue, remove it's edges one by one.                                                                    //
-//              Update the indegree of the adjacent vertices. If a vertice reaches indegree = 0, add it to the queue.                           //
-//              Repeat until queue is empty.                                                                                                    //
-//              ADDED! Keep track of longest path: When adding a vertice to the queue, update his path value and save the max value.            //
-//              O(V+E)                                                                                                                          //
-//          (5) Print result and claer memory.                                                                                                  //
+//          (2) In each iteration, we construct new level graph and find blocking flow. It can be proved that the number of levels increase     //
+//              at least by one in every iteration (Refer the below reference video for the proof). So the outer loop runs at most O(V) times.  //
+//               |                                                                                                                              //
+//          (3)  ->>  Sending multiple more flows until a blocking flow is reached takes O(VE) time.  Resulting Complexity: O (V²E)             //
 //                                                                                                                                              //
 //----------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -164,12 +158,12 @@ int Graph::sendFlow(int u, int flow, int t, int start[])
     }
  
     // Traverse all adjacent edges one -by - one.
-    for (  ; start[u] < (int)adj[u].size(); start[u]++){
+    for (  ; start[u] < (int)adj[u].size(); start[u]++){ 
         // Pick next edge from adjacency list of u
         Edge &e = adj[u][start[u]];
                                      
         if (level[e.v] == level[u]+1 && e.flow < e.C){
-            // find minimum flow from u to t
+            // find minimum flow from u to t    
             int curr_flow = min(flow, e.C - e.flow);
 
             int temp_flow = sendFlow(e.v, curr_flow, t, start);
@@ -203,13 +197,13 @@ int Graph::DinicMaxflow(int s, int t)
  
     // Augment the flow while there is path
     // from source to sink
-    while (BFS(s, t) == true){
+    while (BFS(s, t) == true){ // O(V)
         // store how many edges are visited
         // from V { 0 to V }
         int *start = new int[V+1] {0};
  
         // while flow is not zero in graph from S to D
-        while (int flow = sendFlow(s, INT_MAX, t, start))
+        while (int flow = sendFlow(s, INT_MAX, t, start)) //O(VE)
  
             // Add path flow to overall flow
             total += flow;
